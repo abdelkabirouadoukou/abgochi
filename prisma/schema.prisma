@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  price       Int
+  currency    String   @default("MAD")
+  imageUrl    String
+  featured    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String
+  category  String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  author    String
+  location  String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
