@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useDebouncedValue } from "@/lib/hooks";
 import { ClientStatusBadge } from "@/components/admin/ClientStatusBadge";
 import type { ClientListItem } from "@/lib/clients";
 import { CLIENT_STATUS_OPTIONS } from "@/lib/client-status";
@@ -23,10 +24,11 @@ const FILTERS: { value: "all" | ClientStatus; label: string }[] = [
 export function ClientsAdminList({ clients }: ClientsAdminListProps) {
   const [filter, setFilter] = useState<"all" | ClientStatus>("all");
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 280);
 
   const filtered = useMemo(() => {
     let list = filter === "all" ? clients : clients.filter((c) => c.status === filter);
-    const q = query.trim().toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
       (c) =>
@@ -35,7 +37,7 @@ export function ClientsAdminList({ clients }: ClientsAdminListProps) {
         (c.city?.toLowerCase().includes(q) ?? false) ||
         (c.productInterest?.toLowerCase().includes(q) ?? false)
     );
-  }, [clients, filter, query]);
+  }, [clients, filter, debouncedQuery]);
 
   return (
     <div className="space-y-6">

@@ -1,14 +1,14 @@
 import { TextReveal } from "@/components/motion/TextReveal";
 import { Reveal } from "@/components/motion/Reveal";
 import { EditorialProductCard } from "@/components/store/EditorialProductCard";
-import { getActiveProducts } from "@/lib/products";
+import { getCachedActiveProducts } from "@/lib/data/storefront";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function ProductsPage() {
-  let products: Awaited<ReturnType<typeof getActiveProducts>> = [];
+  let products: Awaited<ReturnType<typeof getCachedActiveProducts>> = [];
   try {
-    products = await getActiveProducts();
+    products = await getCachedActiveProducts();
   } catch {
     products = [];
   }

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "@/components/store/ProductDetailClient";
-import { getProductBySlug } from "@/lib/products";
+import { getCachedProductBySlug } from "@/lib/data/storefront";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -11,7 +11,7 @@ export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
   let product;
   try {
-    product = await getProductBySlug(slug);
+    product = await getCachedProductBySlug(slug);
   } catch {
     notFound();
   }

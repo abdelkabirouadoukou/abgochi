@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
+import { memo } from "react";
 import { PremiumImage } from "@/components/ui/PremiumImage";
 
 type GalleryItem = {
@@ -59,15 +59,9 @@ function gridPlacement(variant: GalleryItem["variant"]) {
   }
 }
 
-function GalleryCell({ item, index }: { item: GalleryItem; index: number }) {
+const GalleryCell = memo(function GalleryCell({ item }: { item: GalleryItem }) {
   return (
-    <motion.li
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-4%" }}
-      transition={{ duration: 0.65, delay: Math.min(index * 0.05, 0.25) }}
-      className={`${gridPlacement(item.variant)} min-w-0 list-none`}
-    >
+    <li className={`${gridPlacement(item.variant)} reveal-on-scroll min-w-0 list-none`}>
       <div className="landing-gallery-frame group relative w-full overflow-hidden">
         <div className="landing-gallery-aspect relative w-full">
           <PremiumImage
@@ -80,9 +74,9 @@ function GalleryCell({ item, index }: { item: GalleryItem; index: number }) {
           <div className="landing-image-vignette pointer-events-none absolute inset-0" />
         </div>
       </div>
-    </motion.li>
+    </li>
   );
-}
+});
 
 type LandingGalleryProps = {
   previewImages: string[];
@@ -101,17 +95,19 @@ export function LandingGallery({ previewImages, totalCount }: LandingGalleryProp
       className="scroll-mt-24 overflow-x-clip border-t border-white/[0.06]"
     >
       <div className="mx-auto max-w-[90rem] px-4 py-16 sm:px-6 sm:py-20 md:px-12 md:py-28">
-        <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">Gallery</p>
-        <h2 className="mt-4 max-w-lg font-serif text-3xl text-[#f4f1ea] sm:text-4xl md:text-5xl">
-          Phone photos, treated with care
-        </h2>
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-white/40">
-          Real workshop light. Cropped and framed — never stretched.
-        </p>
+        <div className="reveal-on-scroll">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">Gallery</p>
+          <h2 className="mt-4 max-w-lg font-serif text-3xl text-[#f4f1ea] sm:text-4xl md:text-5xl">
+            Phone photos, treated with care
+          </h2>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/40">
+            Real workshop light. Cropped and framed — never stretched.
+          </p>
+        </div>
 
         <ul className="landing-gallery-grid mt-10 sm:mt-12">
           {items.map((item, i) => (
-            <GalleryCell key={`${item.src}-${i}`} item={item} index={i} />
+            <GalleryCell key={`${item.src}-${i}`} item={item} />
           ))}
         </ul>
 

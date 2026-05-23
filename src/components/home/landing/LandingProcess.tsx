@@ -1,16 +1,14 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { memo } from "react";
 import { PremiumImage } from "@/components/ui/PremiumImage";
 import { craftSteps } from "@/lib/config";
-import { SectionReveal } from "@/components/motion/SectionReveal";
 
 type LandingProcessProps = {
   stepImages: string[];
 };
 
-function ProcessStep({
+const ProcessStep = memo(function ProcessStep({
   item,
   image,
   index,
@@ -19,22 +17,15 @@ function ProcessStep({
   image?: string;
   index: number;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const imageY = useTransform(scrollYProgress, [0, 1], [24, -24]);
   const reversed = index % 2 === 1;
 
   return (
     <section
-      ref={ref}
       className={`grid min-h-0 items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24 ${
         reversed ? "md:[&>*:first-child]:order-2" : ""
       }`}
     >
-      <motion.div style={{ y: imageY }} className="relative">
+      <div className="reveal-on-scroll relative">
         <div className="landing-image-frame relative aspect-[4/5] overflow-hidden md:aspect-[3/4]">
           {image ? (
             <PremiumImage
@@ -54,9 +45,9 @@ function ProcessStep({
         <span className="absolute -left-2 top-6 font-serif text-7xl text-white/[0.04] md:-left-8 md:text-8xl">
           {item.step}
         </span>
-      </motion.div>
+      </div>
 
-      <SectionReveal delay={0.1} y={20}>
+      <div className="reveal-on-scroll">
         <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">
           Step {item.step}
         </p>
@@ -66,21 +57,21 @@ function ProcessStep({
         <p className="mt-6 max-w-md text-lg leading-[1.75] text-white/50">
           {item.text}
         </p>
-      </SectionReveal>
+      </div>
     </section>
   );
-}
+});
 
 export function LandingProcess({ stepImages }: LandingProcessProps) {
   return (
     <section id="process" className="scroll-mt-24 border-t border-white/[0.06] bg-[#060606]">
       <div className="mx-auto max-w-[90rem] px-6 md:px-12">
-        <SectionReveal className="pt-24 md:pt-32">
+        <div className="reveal-on-scroll pt-24 md:pt-32">
           <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">Process</p>
           <h2 className="mt-4 max-w-2xl font-serif text-4xl text-[#f4f1ea] md:text-5xl">
             A craft journey in three quiet steps
           </h2>
-        </SectionReveal>
+        </div>
 
         <div className="mt-8 divide-y divide-white/[0.06]">
           {craftSteps.map((item, i) => (

@@ -1,26 +1,31 @@
 "use client";
 
-import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { PremiumImage } from "@/components/ui/PremiumImage";
-import { WhatsAppOrderModal } from "@/components/whatsapp/WhatsAppOrderModal";
 import type { ProductDTO } from "@/lib/products";
 import { LandingProductsEmpty } from "@/components/home/landing/LandingProductsEmpty";
 import { formatPrice } from "@/lib/utils";
+
+const WhatsAppOrderModal = dynamic(
+  () =>
+    import("@/components/whatsapp/WhatsAppOrderModal").then((m) => ({
+      default: m.WhatsAppOrderModal,
+    })),
+  { ssr: false }
+);
 
 type LandingFeaturedProps = {
   products: ProductDTO[];
 };
 
-function FeaturedPiece({
+const FeaturedPiece = memo(function FeaturedPiece({
   product,
   layout,
-  index,
 }: {
   product: ProductDTO;
   layout: "hero" | "tall" | "wide" | "compact";
-  index: number;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const image = product.images[0];
@@ -35,12 +40,8 @@ function FeaturedPiece({
 
   return (
     <>
-      <motion.article
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-8%" }}
-        transition={{ duration: 0.75, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-        className={`group flex flex-col ${layout === "hero" ? "h-full" : ""}`}
+      <article
+        className={`reveal-on-scroll group flex flex-col ${layout === "hero" ? "h-full" : ""}`}
       >
         <Link href={`/products/${product.slug}`} className="block flex-1">
           <div className={`landing-image-frame relative overflow-hidden ${aspect}`}>
@@ -81,16 +82,18 @@ function FeaturedPiece({
         >
           {product.stock > 0 ? "Order on WhatsApp" : "Out of stock"}
         </button>
-      </motion.article>
+      </article>
 
-      <WhatsAppOrderModal
-        productName={product.name}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {modalOpen ? (
+        <WhatsAppOrderModal
+          productName={product.name}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      ) : null}
     </>
   );
-}
+});
 
 export function LandingFeatured({ products }: LandingFeaturedProps) {
   const featured = products.slice(0, 6);
@@ -104,7 +107,7 @@ export function LandingFeatured({ products }: LandingFeaturedProps) {
   return (
     <section id="collection" className="scroll-mt-24 border-t border-white/[0.06]">
       <div className="mx-auto max-w-[90rem] px-6 py-20 md:px-12 md:py-28">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="reveal-on-scroll flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">Collection</p>
             <h2 className="mt-4 font-serif text-4xl text-[#f4f1ea] md:text-5xl">Bags in the workshop</h2>
@@ -120,32 +123,32 @@ export function LandingFeatured({ products }: LandingFeaturedProps) {
         <div className="mt-14 grid gap-6 md:grid-cols-12 md:gap-5">
           {a ? (
             <div className="md:col-span-7 md:row-span-2">
-              <FeaturedPiece product={a} layout="hero" index={0} />
+              <FeaturedPiece product={a} layout="hero" />
             </div>
           ) : null}
           {b ? (
             <div className="md:col-span-5">
-              <FeaturedPiece product={b} layout="tall" index={1} />
+              <FeaturedPiece product={b} layout="tall" />
             </div>
           ) : null}
           {c ? (
             <div className="md:col-span-5">
-              <FeaturedPiece product={c} layout="compact" index={2} />
+              <FeaturedPiece product={c} layout="compact" />
             </div>
           ) : null}
           {d ? (
             <div className="md:col-span-4">
-              <FeaturedPiece product={d} layout="compact" index={3} />
+              <FeaturedPiece product={d} layout="compact" />
             </div>
           ) : null}
           {e ? (
             <div className="md:col-span-8">
-              <FeaturedPiece product={e} layout="wide" index={4} />
+              <FeaturedPiece product={e} layout="wide" />
             </div>
           ) : null}
           {f ? (
             <div className="md:col-span-12 md:max-w-md">
-              <FeaturedPiece product={f} layout="tall" index={5} />
+              <FeaturedPiece product={f} layout="tall" />
             </div>
           ) : null}
         </div>

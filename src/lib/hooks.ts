@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 /** True on touch/coarse pointer devices — use to disable heavy motion */
 export function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState(true);
 
   useEffect(() => {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -27,4 +27,16 @@ export function useIsDesktop() {
   }, []);
 
   return desktop;
+}
+
+/** Debounce text input for admin filters */
+export function useDebouncedValue<T>(value: T, delayMs = 300): T {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delayMs);
+    return () => clearTimeout(timer);
+  }, [value, delayMs]);
+
+  return debounced;
 }

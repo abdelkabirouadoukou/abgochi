@@ -7,13 +7,17 @@ import "./globals.css";
 const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
+  display: "swap",
+  preload: true,
 });
 
 const libreBaskerville = Libre_Baskerville({
   variable: "--font-serif",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {

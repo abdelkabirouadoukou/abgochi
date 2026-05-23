@@ -1,21 +1,18 @@
 import { HomeExperience } from "@/components/home/HomeExperience";
-import { getActiveProducts } from "@/lib/products";
-import { getSiteSettings } from "@/lib/site-settings";
+import { getStorefrontData } from "@/lib/data/storefront";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
-  let products: Awaited<ReturnType<typeof getActiveProducts>> = [];
+  let products: Awaited<ReturnType<typeof getStorefrontData>>["products"] = [];
   let heroImages: string[] = [];
+
   try {
-    products = await getActiveProducts();
+    const data = await getStorefrontData();
+    products = data.products;
+    heroImages = data.heroImages;
   } catch {
     products = [];
-  }
-  try {
-    const settings = await getSiteSettings();
-    heroImages = settings.heroImages;
-  } catch {
     heroImages = [];
   }
 

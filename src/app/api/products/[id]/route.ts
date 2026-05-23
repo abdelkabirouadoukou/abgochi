@@ -1,5 +1,7 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { isAdmin, requireAdmin } from "@/lib/admin-auth";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import {
   deleteProduct,
   getProductById,
@@ -37,6 +39,7 @@ export async function PATCH(request: Request, { params }: Params) {
     }
 
     const product = await updateProduct(id, parsed.data);
+    revalidateTag(CACHE_TAGS.products, "max");
     return NextResponse.json(product);
   } catch {
     return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
@@ -49,6 +52,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     const { id } = await params;
     await deleteProduct(id);
+    revalidateTag(CACHE_TAGS.products, "max");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });

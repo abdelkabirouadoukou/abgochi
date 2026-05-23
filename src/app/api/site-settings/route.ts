@@ -1,5 +1,7 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { MAX_HERO_IMAGES } from "@/lib/site-settings-constants";
 import { getSiteSettings, updateHeroImages } from "@/lib/site-settings";
 import { z } from "zod";
@@ -28,6 +30,8 @@ export async function PATCH(request: Request) {
     }
 
     const settings = await updateHeroImages(parsed.data.heroImages);
+    revalidateTag(CACHE_TAGS.siteSettings, "max");
+    revalidateTag(CACHE_TAGS.products, "max");
     return NextResponse.json(settings);
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized") {

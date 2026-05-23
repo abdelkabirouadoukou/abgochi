@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
+import { IMAGE_BLUR_DATA_URL } from "@/lib/image-placeholder";
 
 type PremiumImageProps = {
   src: string;
@@ -14,10 +14,7 @@ type PremiumImageProps = {
   wrapperClassName?: string;
 };
 
-/**
- * Consistent crop + shimmer placeholder + fade-in for phone photos.
- */
-export function PremiumImage({
+function PremiumImageComponent({
   src,
   alt,
   fill = true,
@@ -42,30 +39,27 @@ export function PremiumImage({
   return (
     <div className={`relative overflow-hidden bg-[#121210] ${wrapperClassName}`}>
       <div
-        className={`image-shimmer absolute inset-0 transition-opacity duration-700 ${
+        className={`image-shimmer absolute inset-0 transition-opacity duration-500 ${
           loaded ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
         aria-hidden="true"
       />
-      <motion.div
-        className="absolute inset-0"
-        initial={false}
-        animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill={fill}
-          priority={priority}
-          loading={priority ? undefined : "lazy"}
-          decoding="async"
-          sizes={sizes}
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
-          className={`object-cover object-center ${className}`}
-        />
-      </motion.div>
+      <Image
+        src={src}
+        alt={alt}
+        fill={fill}
+        priority={priority}
+        loading={priority ? undefined : "lazy"}
+        decoding="async"
+        sizes={sizes}
+        placeholder="blur"
+        blurDataURL={IMAGE_BLUR_DATA_URL}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={`object-cover object-center transition-opacity duration-500 ease-out ${loaded ? "opacity-100" : "opacity-0"} ${className}`}
+      />
     </div>
   );
 }
+
+export const PremiumImage = memo(PremiumImageComponent);

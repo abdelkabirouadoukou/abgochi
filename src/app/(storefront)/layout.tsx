@@ -1,8 +1,6 @@
 import { CinematicFooter } from "@/components/store/CinematicFooter";
 import { LandingNavbar } from "@/components/store/LandingNavbar";
-import { CustomCursor } from "@/components/motion/CustomCursor";
-import { MotionProvider } from "@/components/motion/MotionProvider";
-import { PageLoader } from "@/components/motion/PageLoader";
+import { StorefrontMotion } from "@/components/store/StorefrontMotion";
 
 export default function StorefrontLayout({
   children,
@@ -10,12 +8,11 @@ export default function StorefrontLayout({
   children: React.ReactNode;
 }) {
   return (
-    <MotionProvider>
-      <PageLoader />
-      <CustomCursor />
+    <>
+      <StorefrontMotion />
       <LandingNavbar />
-      <main>{children}</main>
+      <main className="page-enter">{children}</main>
       <CinematicFooter />
-    </MotionProvider>
+    </>
   );
 }

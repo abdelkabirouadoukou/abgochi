@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { PremiumImage } from "@/components/ui/PremiumImage";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 
@@ -11,7 +11,7 @@ type HeroImageRotatorProps = {
   images: string[];
 };
 
-export function HeroImageRotator({ images }: HeroImageRotatorProps) {
+function HeroImageRotatorComponent({ images }: HeroImageRotatorProps) {
   const [index, setIndex] = useState(0);
   const reduced = usePrefersReducedMotion();
 
@@ -39,9 +39,9 @@ export function HeroImageRotator({ images }: HeroImageRotatorProps) {
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
-          initial={{ opacity: 0, scale: 1.04 }}
+          initial={reduced ? false : { opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.02 }}
+          exit={reduced ? undefined : { opacity: 0, scale: 1.02 }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0"
         >
@@ -71,3 +71,5 @@ export function HeroImageRotator({ images }: HeroImageRotatorProps) {
     </div>
   );
 }
+
+export const HeroImageRotator = memo(HeroImageRotatorComponent);

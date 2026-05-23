@@ -1,13 +1,37 @@
-"use client";
-
+import dynamic from "next/dynamic";
 import type { ProductDTO } from "@/lib/products";
 import { collectGalleryImages } from "@/lib/gallery-images";
 import { LandingContact } from "@/components/home/landing/LandingContact";
-import { LandingFeatured } from "@/components/home/landing/LandingFeatured";
-import { LandingGallery } from "@/components/home/landing/LandingGallery";
-import { LandingHero } from "@/components/home/landing/LandingHero";
-import { LandingProcess } from "@/components/home/landing/LandingProcess";
 import { LandingStory } from "@/components/home/landing/LandingStory";
+
+const LandingHero = dynamic(
+  () =>
+    import("@/components/home/landing/LandingHero").then((m) => ({
+      default: m.LandingHero,
+    })),
+  { loading: () => <div className="min-h-[100svh] bg-[#050505]" aria-hidden /> }
+);
+
+const LandingFeatured = dynamic(
+  () =>
+    import("@/components/home/landing/LandingFeatured").then((m) => ({
+      default: m.LandingFeatured,
+    }))
+);
+
+const LandingProcess = dynamic(
+  () =>
+    import("@/components/home/landing/LandingProcess").then((m) => ({
+      default: m.LandingProcess,
+    }))
+);
+
+const LandingGallery = dynamic(
+  () =>
+    import("@/components/home/landing/LandingGallery").then((m) => ({
+      default: m.LandingGallery,
+    }))
+);
 
 type HomeExperienceProps = {
   products: ProductDTO[];
@@ -20,10 +44,10 @@ export function HomeExperience({ products, heroImages }: HomeExperienceProps) {
   const stepImages =
     heroImages.length >= 3
       ? heroImages.slice(0, 3)
-      : [
-          ...heroImages,
-          ...allGalleryImages.slice(0, 3 - heroImages.length),
-        ].slice(0, 3);
+      : [...heroImages, ...allGalleryImages.slice(0, 3 - heroImages.length)].slice(
+          0,
+          3
+        );
 
   return (
     <div className="landing-page bg-[#050505]">
@@ -32,7 +56,7 @@ export function HomeExperience({ products, heroImages }: HomeExperienceProps) {
       <LandingFeatured products={products} />
       <LandingProcess stepImages={stepImages} />
       <LandingGallery
-        previewImages={allGalleryImages}
+        previewImages={allGalleryImages.slice(0, 6)}
         totalCount={allGalleryImages.length}
       />
       <LandingContact />

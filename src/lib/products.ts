@@ -41,10 +41,24 @@ function mapProduct(p: {
   };
 }
 
+const productSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  price: true,
+  category: true,
+  stock: true,
+  images: true,
+  active: true,
+  createdAt: true,
+} as const;
+
 export async function getActiveProducts() {
   const products = await prisma.product.findMany({
     where: { active: true },
     orderBy: { createdAt: "desc" },
+    select: productSelect,
   });
   return products.map(mapProduct);
 }

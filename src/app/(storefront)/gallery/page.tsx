@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { collectGalleryImages } from "@/lib/gallery-images";
-import { getActiveProducts } from "@/lib/products";
-import { getSiteSettings } from "@/lib/site-settings";
+import { getStorefrontData } from "@/lib/data/storefront";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = {
   title: "Gallery | ABGOCHI",
@@ -12,17 +11,15 @@ export const metadata = {
 };
 
 export default async function GalleryPage() {
-  let products: Awaited<ReturnType<typeof getActiveProducts>> = [];
+  let products: Awaited<ReturnType<typeof getStorefrontData>>["products"] = [];
   let heroImages: string[] = [];
+
   try {
-    products = await getActiveProducts();
+    const data = await getStorefrontData();
+    products = data.products;
+    heroImages = data.heroImages;
   } catch {
     products = [];
-  }
-  try {
-    const settings = await getSiteSettings();
-    heroImages = settings.heroImages;
-  } catch {
     heroImages = [];
   }
 

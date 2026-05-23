@@ -1,5 +1,7 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { isAdmin, requireAdmin } from "@/lib/admin-auth";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { createProduct, getActiveProducts, getAllProducts } from "@/lib/products";
 import { productSchema } from "@/lib/validators";
 
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
     }
 
     const product = await createProduct(parsed.data);
+    revalidateTag(CACHE_TAGS.products, "max");
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error(error);

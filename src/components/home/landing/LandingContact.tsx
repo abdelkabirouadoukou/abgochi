@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { siteConfig } from "@/lib/config";
 import { whatsappContactUrl } from "@/lib/whatsapp";
 
@@ -8,13 +5,7 @@ export function LandingContact() {
   return (
     <section id="contact" className="scroll-mt-24 border-t border-white/[0.06]">
       <div className="mx-auto max-w-[90rem] px-6 py-24 md:px-12 md:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.85 }}
-          className="landing-contact-band relative overflow-hidden px-8 py-16 md:px-16 md:py-20"
-        >
+        <div className="landing-contact-band reveal-on-scroll relative overflow-hidden px-8 py-16 md:px-16 md:py-20">
           <div className="landing-grain pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden />
           <div className="relative z-10 grid gap-10 md:grid-cols-2 md:items-center">
             <div>
@@ -40,7 +31,7 @@ export function LandingContact() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

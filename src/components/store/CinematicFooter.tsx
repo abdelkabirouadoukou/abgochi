@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 import { whatsappContactUrl } from "@/lib/whatsapp";
@@ -19,22 +16,14 @@ export function CinematicFooter() {
 
   return (
     <footer className="footer-cinematic relative overflow-hidden border-t border-white/[0.06]">
-      <motion.div
-        className="footer-cinematic-glow pointer-events-none absolute inset-0"
-        animate={{ opacity: [0.35, 0.55, 0.35] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      <div
+        className="footer-cinematic-glow footer-glow-pulse pointer-events-none absolute inset-0"
         aria-hidden
       />
       <div className="landing-grain pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden />
 
       <div className="relative z-10 mx-auto max-w-[90rem] px-6 py-24 md:px-12 md:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-2xl"
-        >
+        <div className="reveal-on-scroll max-w-2xl">
           <p className="font-serif text-5xl tracking-tight text-[#f4f1ea] md:text-7xl lg:text-8xl">
             {siteConfig.brand}
           </p>
@@ -44,7 +33,7 @@ export function CinematicFooter() {
           <p className="mt-5 max-w-md text-base leading-relaxed text-white/45">
             {siteConfig.tagline} Each bag is sewn in Morocco by {siteConfig.artisanDisplayName}.
           </p>
-        </motion.div>
+        </div>
 
         <div className="footer-divider my-14 md:my-16" />
 
