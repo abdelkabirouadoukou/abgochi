@@ -20,17 +20,17 @@ export function Button({
   className = "",
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center px-8 py-3.5 text-[11px] uppercase tracking-[0.28em] transition-colors duration-500";
+    "inline-flex min-w-[200px] items-center justify-center px-10 py-4 text-xs font-normal uppercase tracking-[0.2em] transition-all duration-500";
   const styles =
     variant === "primary"
-      ? "border border-white/90 bg-white text-black hover:bg-transparent hover:text-white"
-      : "border border-white/25 bg-transparent text-white hover:border-white/70";
+      ? "border border-accent/80 bg-accent text-[#1a1814] hover:bg-transparent hover:text-accent"
+      : "border border-white/20 bg-transparent text-white/90 hover:border-accent/50 hover:text-accent";
 
   const content = (
     <motion.span
       className={`${base} ${styles} ${className}`}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.015 }}
+      whileTap={{ scale: 0.985 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}

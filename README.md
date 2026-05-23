@@ -1,52 +1,40 @@
-# Atelier Mohammed — AbGochi
+# ABGOCHI — Handmade Fabric Bags
 
-Premium dark luxury artisan website for handcrafted Moroccan knives and leather goods.
+Cinematic artisan storefront for a Moroccan father-and-workshop brand. **Handmade fabric bags**, traditional craft carries, WhatsApp-only checkout.
+
+## What we sell
+
+- Handmade fabric bags
+- Simple traditional craft bags
+- Custom orders from the workshop (minimal tools, almost no machines)
 
 ## Stack
 
-- **Next.js 16** (App Router)
-- **Tailwind CSS v4**
-- **Framer Motion** — subtle cinematic animations
-- **Lenis** — smooth scrolling
-- **Prisma** — PostgreSQL (Neon / Supabase)
-- **UploadThing** — image uploads (admin-ready API)
+- Next.js 16 · TypeScript · Tailwind · Framer Motion · GSAP · Lenis
+- Neon PostgreSQL · Prisma
+- Clerk (admin) · Cloudinary (images)
 
-## Getting started
+## Setup
 
 ```bash
 npm install
 cp .env.example .env
+npx prisma migrate dev
+npm run db:seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+If upgrading from old categories (`knife` / `leather`), run the rename migration in `prisma/migrations/20250523120000_bag_categories/`.
 
-## Environment
+## URLs
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Postgres connection string (Neon or Supabase) |
-| `UPLOADTHING_TOKEN` | UploadThing secret token |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | WhatsApp number (country code, no +) |
-| `NEXT_PUBLIC_INSTAGRAM_URL` | Instagram profile URL |
-| `NEXT_PUBLIC_EMAIL` | Contact email |
+- Shop: http://localhost:3000
+- Admin: http://localhost:3000/sign-in
 
-## Database
+## Product categories
 
-```bash
-npx prisma migrate dev --name init
-npm run db:seed
-```
-
-## Scripts
-
-- `npm run dev` — development server
-- `npm run build` — production build
-- `npm run db:seed` — seed products, gallery, testimonials
-
-## Brand
-
-- **Atelier Mohammed** — public artisan brand
-- **AbGochi** — project / studio tagline
-
-Replace placeholder Unsplash imagery with your own workshop photography for production.
+| Value | Label |
+|-------|--------|
+| `bag` | Fabric bag |
+| `traditional` | Traditional craft bag |
+| `custom` | Custom order |

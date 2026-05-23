@@ -1,4 +1,5 @@
 import { FadeIn } from "./FadeIn";
+import { Label } from "./Label";
 
 type SectionHeadingProps = {
   label: string;
@@ -13,18 +14,18 @@ export function SectionHeading({
   description,
   align = "left",
 }: SectionHeadingProps) {
-  const alignment = align === "center" ? "text-center mx-auto" : "text-left";
+  const alignment = align === "center" ? "text-center mx-auto items-center" : "text-left";
 
   return (
     <FadeIn className={`max-w-3xl ${alignment}`}>
-      <p className="mb-4 text-[10px] uppercase tracking-[0.42em] text-muted">
+      <Label centered={align === "center"} className={align === "center" ? "mb-6" : "mb-5"}>
         {label}
-      </p>
-      <h2 className="font-display text-4xl font-light leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl">
+      </Label>
+      <h2 className="headline-display text-4xl text-white sm:text-5xl md:text-[3.5rem] md:leading-[1.06]">
         {title}
       </h2>
       {description ? (
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
+        <p className="body-luxury mt-6 max-w-2xl text-base md:text-[1.0625rem]">
           {description}
         </p>
       ) : null}

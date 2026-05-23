@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import "./src/env";
 
 const nextConfig: NextConfig = {
   images: {
@@ -13,7 +14,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "uploadthing.com",
+        hostname: "**.ufs.sh",
       },
     ],
   },

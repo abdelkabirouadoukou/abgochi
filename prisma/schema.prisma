@@ -7,34 +7,66 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ProductCategory {
+  bag
+  traditional
+  custom
+}
+
 model Product {
-  id          String   @id @default(cuid())
+  id          String          @id @default(uuid()) @db.Uuid
   name        String
-  slug        String   @unique
+  slug        String          @unique
   description String
-  price       Int
-  currency    String   @default("MAD")
-  imageUrl    String
-  featured    Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  price       Decimal         @db.Decimal(10, 2)
+  category    ProductCategory
+  stock       Int             @default(0)
+  images      String[]
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@map("products")
 }
 
-model GalleryImage {
-  id        String   @id @default(cuid())
-  url       String
-  alt       String
-  category  String
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+enum ClientStatus {
+  pending
+  in_progress
+  done
 }
 
-model Testimonial {
-  id        String   @id @default(cuid())
-  quote     String
-  author    String
-  location  String?
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+model Client {
+  id              String       @id @default(uuid()) @db.Uuid
+  name            String
+  phone           String       @default("")
+  city            String       @default("")
+  message         String       @default("")
+  productInterest String       @default("") @map("product_interest")
+  status          ClientStatus @default(pending)
+  deadline        DateTime?    @db.Date
+  notes           String       @default("")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  files           ClientFile[]
+
+  @@map("clients")
+}
+
+model SiteSettings {
+  id         String   @id @default("default")
+  heroImages String[] @default([]) @map("hero_images")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+model ClientFile {
+  id         String   @id @default(uuid()) @db.Uuid
+  clientId   String   @map("client_id") @db.Uuid
+  fileUrl    String   @map("file_url")
+  fileName   String   @map("file_name")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("client_files")
 }
