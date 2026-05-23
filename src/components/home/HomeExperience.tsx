@@ -12,10 +12,10 @@ const LandingHero = dynamic(
   { loading: () => <div className="min-h-[100svh] bg-[#050505]" aria-hidden /> }
 );
 
-const LandingFeatured = dynamic(
+const LandingCollection = dynamic(
   () =>
-    import("@/components/home/landing/LandingFeatured").then((m) => ({
-      default: m.LandingFeatured,
+    import("@/components/home/landing/LandingCollection").then((m) => ({
+      default: m.LandingCollection,
     }))
 );
 
@@ -23,13 +23,6 @@ const LandingProcess = dynamic(
   () =>
     import("@/components/home/landing/LandingProcess").then((m) => ({
       default: m.LandingProcess,
-    }))
-);
-
-const LandingGallery = dynamic(
-  () =>
-    import("@/components/home/landing/LandingGallery").then((m) => ({
-      default: m.LandingGallery,
     }))
 );
 
@@ -53,12 +46,12 @@ export function HomeExperience({ products, heroImages }: HomeExperienceProps) {
     <div className="landing-page bg-[#050505]">
       <LandingHero heroImages={heroImages} fallbackImage={fallbackImage} />
       <LandingStory />
-      <LandingFeatured products={products} />
-      <LandingProcess stepImages={stepImages} />
-      <LandingGallery
-        previewImages={allGalleryImages.slice(0, 6)}
-        totalCount={allGalleryImages.length}
+      <LandingCollection
+        products={products}
+        galleryImages={allGalleryImages}
+        totalGalleryCount={allGalleryImages.length}
       />
+      <LandingProcess stepImages={stepImages} />
       <LandingContact />
     </div>
   );

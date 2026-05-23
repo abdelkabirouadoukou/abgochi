@@ -1,11 +1,18 @@
 import { z } from "zod";
 
+export const productAvailabilitySchema = z.enum([
+  "in_stock",
+  "made_to_order",
+  "unavailable",
+]);
+
 export const productSchema = z.object({
   name: z.string().min(2, "Name is required"),
   description: z.string().min(10, "Description is required"),
   price: z.coerce.number().positive("Price must be positive"),
   category: z.enum(["bag", "traditional", "custom"]),
   stock: z.coerce.number().int().min(0),
+  availability: productAvailabilitySchema,
   images: z.array(z.string().url()).min(1, "Add at least one image"),
   active: z.boolean().optional().default(true),
 });

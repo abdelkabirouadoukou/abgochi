@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 import { getAllProducts } from "@/lib/products";
+import { AVAILABILITY_OPTIONS } from "@/lib/product-availability";
 import { formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +45,10 @@ export default async function AdminProductsPage() {
                 <p className="text-lg text-white">{product.name}</p>
                 <p className="text-accent">{formatPrice(product.price)} MAD</p>
                 <p className="text-sm text-white/40">
-                  Stock: {product.stock} · {product.active ? "Active" : "Hidden"}
+                  Stock: {product.stock} ·{" "}
+                  {AVAILABILITY_OPTIONS.find((o) => o.value === product.availability)?.label ??
+                    product.availability}{" "}
+                  · {product.active ? "Active" : "Hidden"}
                 </p>
               </div>
               <div className="flex gap-3">

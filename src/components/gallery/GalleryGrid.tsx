@@ -1,6 +1,10 @@
 "use client";
 
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ImageLightbox,
+  type LightboxState,
+} from "@/components/ui/ImageLightbox";
 import { PremiumImage } from "@/components/ui/PremiumImage";
 
 const INITIAL_COUNT = 16;
@@ -13,13 +17,20 @@ type GalleryGridProps = {
 const GalleryCell = memo(function GalleryCell({
   src,
   index,
+  onOpen,
 }: {
   src: string;
   index: number;
+  onOpen: () => void;
 }) {
   return (
     <figure className="gallery-page-item group min-w-0 reveal-on-scroll">
-      <div className="landing-gallery-frame relative aspect-[4/5] overflow-hidden sm:aspect-[3/4]">
+      <button
+        type="button"
+        onClick={onOpen}
+        className="landing-gallery-frame relative block aspect-[4/5] w-full overflow-hidden text-left sm:aspect-[3/4]"
+        aria-label={`View photo ${index + 1}`}
+      >
         <PremiumImage
           src={src}
           alt={`ABGOCHI gallery ${index + 1}`}
@@ -28,7 +39,7 @@ const GalleryCell = memo(function GalleryCell({
           className="object-cover object-center transition duration-[1s] ease-out group-hover:scale-[1.02]"
         />
         <div className="landing-image-vignette pointer-events-none absolute inset-0" />
-      </div>
+      </button>
     </figure>
   );
 });
@@ -37,6 +48,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
   const [visibleCount, setVisibleCount] = useState(() =>
     Math.min(INITIAL_COUNT, images.length)
   );
+  const [lightbox, setLightbox] = useState<LightboxState | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(() => {
@@ -66,11 +78,23 @@ export function GalleryGrid({ images }: GalleryGridProps) {
 
   const visible = images.slice(0, visibleCount);
 
+  const openAt = useCallback(
+    (index: number) => {
+      setLightbox({ images, index, alt: "ABGOCHI gallery" });
+    },
+    [images]
+  );
+
   return (
     <>
       <div className="gallery-page-grid">
         {visible.map((src, index) => (
-          <GalleryCell key={`${src}-${index}`} src={src} index={index} />
+          <GalleryCell
+            key={`${src}-${index}`}
+            src={src}
+            index={index}
+            onOpen={() => openAt(index)}
+          />
         ))}
       </div>
       {visibleCount < images.length ? (
@@ -78,6 +102,14 @@ export function GalleryGrid({ images }: GalleryGridProps) {
           <span className="text-sm text-white/30">Loading more…</span>
         </div>
       ) : null}
+
+      <ImageLightbox
+        state={lightbox}
+        onClose={() => setLightbox(null)}
+        onIndexChange={(index) =>
+          setLightbox((prev) => (prev ? { ...prev, index } : null))
+        }
+      />
     </>
   );
 }

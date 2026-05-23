@@ -428,6 +428,14 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.collection-toggle {
+  flex-shrink: 0;
+}
+
+#collection {
+  position: relative;
+}
+
 /* Gallery — responsive masonry-style grid */
 .landing-gallery-grid {
   display: grid;

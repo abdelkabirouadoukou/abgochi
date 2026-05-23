@@ -1,18 +1,28 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  ORDER_AGREEMENT_CHECKBOX,
+  ORDER_AGREEMENT_SHORT,
+} from "@/lib/order-rules";
+import {
+  getProductOrderMode,
+  getProductPageUrl,
+} from "@/lib/product-availability";
+import type { ProductDTO } from "@/lib/products";
 import { orderFormSchema } from "@/lib/validators";
 import { whatsappOrderUrl } from "@/lib/whatsapp";
 
 type WhatsAppOrderModalProps = {
-  productName: string;
+  product: ProductDTO;
   open: boolean;
   onClose: () => void;
 };
 
 export function WhatsAppOrderModal({
-  productName,
+  product,
   open,
   onClose,
 }: WhatsAppOrderModalProps) {
@@ -20,7 +30,11 @@ export function WhatsAppOrderModal({
   const [city, setCity] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [message, setMessage] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const mode = getProductOrderMode(product);
+  const orderMode = mode === "made_to_order" ? "made_to_order" : "in_stock";
 
   useEffect(() => {
     if (!open) return;
@@ -35,8 +49,21 @@ export function WhatsAppOrderModal({
     };
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open) {
+      setAgreed(false);
+      setError(null);
+    }
+  }, [open]);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!agreed) {
+      setError("Please accept the order terms to continue.");
+      return;
+    }
+
     const parsed = orderFormSchema.safeParse({
       fullName: fullName.trim(),
       city: city.trim(),
@@ -52,6 +79,8 @@ export function WhatsAppOrderModal({
 
     setError(null);
 
+    const productUrl = getProductPageUrl(product.slug, window.location.origin);
+
     fetch("/api/clients/inquiry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -60,15 +89,22 @@ export function WhatsAppOrderModal({
         city: parsed.data.city,
         message: [
           `Quantité: ${parsed.data.quantity}`,
+          `Lien: ${productUrl}`,
           parsed.data.message?.trim(),
         ]
           .filter(Boolean)
           .join("\n"),
-        productInterest: productName.trim(),
+        productInterest: product.name.trim(),
       }),
     }).catch(() => {});
 
-    const url = whatsappOrderUrl(productName.trim(), parsed.data);
+    const url = whatsappOrderUrl({
+      productName: product.name.trim(),
+      productUrl,
+      data: parsed.data,
+      mode: orderMode,
+    });
+
     const opened = window.open(url, "_blank", "noopener,noreferrer");
     if (!opened) {
       window.location.href = url;
@@ -99,9 +135,9 @@ export function WhatsAppOrderModal({
           >
             <p className="label-luxury">Order via WhatsApp</p>
             <h3 id="order-title" className="font-display mt-2 text-2xl text-white sm:text-3xl">
-              {productName}
+              {product.name}
             </h3>
-            <p className="body-luxury mt-2 text-sm">Your order message will be ready to send.</p>
+            <p className="body-luxury mt-2 text-sm">{ORDER_AGREEMENT_SHORT}</p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
               <Field label="Full name" id="fn">
@@ -143,12 +179,36 @@ export function WhatsAppOrderModal({
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </Field>
+
+              <label className="flex cursor-pointer gap-3 border border-white/[0.08] bg-white/[0.02] p-4">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#c9b896]"
+                />
+                <span className="text-sm leading-relaxed text-white/55">
+                  {ORDER_AGREEMENT_CHECKBOX}{" "}
+                  <Link
+                    href="/terms-of-use"
+                    target="_blank"
+                    className="text-[#c9b896] underline-offset-2 hover:underline"
+                  >
+                    Terms
+                  </Link>
+                </span>
+              </label>
+
               {error ? (
                 <p className="text-sm text-red-400" role="alert">
                   {error}
                 </p>
               ) : null}
-              <button type="submit" className="btn-primary w-full py-4">
+              <button
+                type="submit"
+                disabled={!agreed}
+                className="btn-primary w-full py-4 disabled:cursor-not-allowed disabled:opacity-40"
+              >
                 Continue to WhatsApp
               </button>
               <button type="button" onClick={onClose} className="btn-ghost w-full">

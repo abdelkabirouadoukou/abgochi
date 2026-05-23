@@ -6,6 +6,8 @@ import { useState } from "react";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { categories } from "@/lib/config";
 import type { ProductDTO } from "@/lib/products";
+import { AVAILABILITY_OPTIONS } from "@/lib/product-availability";
+import type { ProductAvailability } from "@/generated/prisma/client";
 import { normalizeCategory } from "@/lib/utils";
 import { productSchema } from "@/lib/validators";
 
@@ -20,6 +22,9 @@ export function ProductForm({ product }: ProductFormProps) {
   const [price, setPrice] = useState(product?.price?.toString() ?? "");
   const [category, setCategory] = useState(normalizeCategory(product?.category));
   const [stock, setStock] = useState(product?.stock?.toString() ?? "1");
+  const [availability, setAvailability] = useState<ProductAvailability>(
+    product?.availability ?? "in_stock"
+  );
   const [active, setActive] = useState(product?.active ?? true);
   const [images, setImages] = useState<string[]>(product?.images ?? []);
   const [saving, setSaving] = useState(false);
@@ -35,6 +40,7 @@ export function ProductForm({ product }: ProductFormProps) {
       price: parseFloat(price),
       category,
       stock: parseInt(stock, 10),
+      availability,
       images,
       active,
     };
@@ -145,6 +151,34 @@ export function ProductForm({ product }: ProductFormProps) {
               </option>
             ))}
           </select>
+        </Field>
+
+        <Field label="Availability (order status)">
+          <div className="space-y-3">
+            {AVAILABILITY_OPTIONS.map((opt) => (
+              <label
+                key={opt.value}
+                className={`flex cursor-pointer gap-4 border p-4 transition ${
+                  availability === opt.value
+                    ? "border-accent bg-accent/10"
+                    : "border-white/15 hover:border-white/30"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="availability"
+                  value={opt.value}
+                  checked={availability === opt.value}
+                  onChange={() => setAvailability(opt.value)}
+                  className="mt-1 h-5 w-5 accent-[#c9b896]"
+                />
+                <span>
+                  <span className="block text-lg font-medium text-white">{opt.label}</span>
+                  <span className="mt-1 block text-sm text-white/50">{opt.description}</span>
+                </span>
+              </label>
+            ))}
+          </div>
         </Field>
 
         <label className="flex items-center gap-4 text-lg text-white">

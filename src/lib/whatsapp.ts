@@ -1,3 +1,4 @@
+import { CUSTOM_ORDER_NOTE } from "@/lib/order-rules";
 import { siteConfig } from "./config";
 
 export type OrderFormData = {
@@ -7,24 +8,51 @@ export type OrderFormData = {
   message?: string;
 };
 
-export function buildOrderMessage(productName: string, data: OrderFormData) {
+export type OrderMessageOptions = {
+  productName: string;
+  productUrl: string;
+  data: OrderFormData;
+  mode: "in_stock" | "made_to_order";
+};
+
+export function buildOrderMessage({
+  productName,
+  productUrl,
+  data,
+  mode,
+}: OrderMessageOptions) {
   const note = data.message?.trim() ? data.message.trim() : "—";
 
-  return `Hello ABGOCHI,
+  const lines = [
+    "Hello ABGOCHI 👋",
+    "",
+    "I want to order this product:",
+    "",
+    `Product: ${productName}`,
+    `Link: ${productUrl}`,
+    `Quantity: ${data.quantity}`,
+    `Name: ${data.fullName}`,
+    `City: ${data.city}`,
+    `Message: ${note}`,
+  ];
 
-I would like to order:
+  if (mode === "made_to_order") {
+    lines.push(
+      "",
+      "This product is out of stock, but I want to order it as a handmade custom piece if possible.",
+      "Please confirm if the materials are available."
+    );
+  } else {
+    lines.push("", "Please confirm availability. Thank you.");
+  }
 
-Product: ${productName}
-Quantity: ${data.quantity}
-Name: ${data.fullName}
-City: ${data.city}
-Note: ${note}
+  lines.push("", CUSTOM_ORDER_NOTE);
 
-Please confirm availability. Thank you.`;
+  return lines.join("\n");
 }
 
-export function whatsappOrderUrl(productName: string, data: OrderFormData) {
-  const text = buildOrderMessage(productName, data);
+export function whatsappOrderUrl(options: OrderMessageOptions) {
+  const text = buildOrderMessage(options);
   return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(text)}`;
 }
 

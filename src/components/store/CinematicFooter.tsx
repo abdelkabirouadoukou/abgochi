@@ -92,11 +92,22 @@ export function CinematicFooter() {
 
         <div className="footer-divider mt-14 md:mt-16" />
 
-        <div className="mt-10 flex flex-col gap-3 text-xs text-white/30 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 text-xs text-white/30 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {siteConfig.brand} · {siteConfig.artisanDisplayName}
           </p>
-          <p>Morocco · Handmade fabric bags</p>
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            <li>
+              <Link href="/privacy-policy" className="footer-link">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms-of-use" className="footer-link">
+                Terms of Use
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </footer>

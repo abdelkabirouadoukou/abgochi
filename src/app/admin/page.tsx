@@ -44,6 +44,7 @@ export default async function AdminDashboardPage() {
           <QuickAction href="/admin/clients" label="Voir tous les clients" />
           <QuickAction href="/admin/products" label="Gérer les produits" />
           <QuickAction href="/admin/hero" label="Images hero" />
+          <QuickAction href="/admin/order-rules" label="Règles de commande" />
         </div>
       </div>
     </div>
