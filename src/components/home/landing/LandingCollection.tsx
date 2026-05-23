@@ -46,74 +46,73 @@ const ProductCard = memo(function ProductCard({
   const mode = getProductOrderMode(product);
 
   return (
-    <>
-      <article className="reveal-on-scroll group flex h-full flex-col">
-        <button
-          type="button"
-          onClick={() => {
-            if (images.length > 0) onImageClick(images, 0, product.name);
-          }}
-          disabled={!image}
-          className="landing-image-frame relative block w-full overflow-hidden text-left disabled:cursor-default"
-          aria-label={`View ${product.name}`}
-        >
-          <div className="relative aspect-[4/5] w-full bg-[#0c0c0c]">
-            {image ? (
-              <PremiumImage
-                src={image}
-                alt={product.name}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                wrapperClassName="absolute inset-0 h-full w-full"
-                className="object-cover transition duration-[1s] ease-out group-hover:scale-[1.02]"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-white/25">—</div>
-            )}
-            <div className="landing-image-vignette pointer-events-none absolute inset-0" />
-            {image ? (
-              <span className="absolute bottom-3 right-3 rounded-sm bg-black/50 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/70 opacity-0 transition group-hover:opacity-100">
-                View
-              </span>
-            ) : null}
-          </div>
-        </button>
+    <article className="reveal-on-scroll group flex h-full flex-col">
+      <button
+        type="button"
+        onClick={() => {
+          if (images.length > 0) onImageClick(images, 0, product.name);
+        }}
+        disabled={!image}
+        className="landing-image-frame relative block w-full overflow-hidden text-left disabled:cursor-default"
+        aria-label={`View ${product.name}`}
+      >
+        <div className="relative aspect-4/5 w-full bg-[#0c0c0c]">
+          {image ? (
+            <PremiumImage
+              src={image}
+              alt={product.name}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              wrapperClassName="absolute inset-0 h-full w-full"
+              className="object-cover transition duration-1000 ease-out group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-white/25">—</div>
+          )}
+          <div className="landing-image-vignette pointer-events-none absolute inset-0" />
+          {image ? (
+            <span className="absolute bottom-3 right-3 rounded-sm bg-black/50 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/70 opacity-0 transition group-hover:opacity-100">
+              View
+            </span>
+          ) : null}
+        </div>
+      </button>
 
-        <div className="mt-5 flex flex-1 flex-col border-t border-white/[0.06] pt-5">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <Link href={`/products/${product.slug}`}>
-                <h3 className="font-serif text-xl leading-tight text-[#f4f1ea] transition hover:text-[#c9b896] md:text-2xl">
-                  {product.name}
-                </h3>
-              </Link>
-              <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/45">
-                {product.description}
-              </p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/35">
-                {getAvailabilityLabel(mode)}
-              </p>
-            </div>
-            <p className="shrink-0 font-serif text-lg text-[#c9b896]">
-              {formatPrice(product.price)}
-              <span className="ml-0.5 text-xs text-white/35">MAD</span>
+      <div className="mt-5 flex flex-1 flex-col border-t border-white/6 pt-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <Link href={`/products/${product.slug}`}>
+              <h3 className="font-serif text-xl leading-tight text-[#f4f1ea] transition hover:text-[#c9b896] md:text-2xl">
+                {product.name}
+              </h3>
+            </Link>
+            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/45">
+              {product.description}
+            </p>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/35">
+              {getAvailabilityLabel(mode)}
             </p>
           </div>
-
-          <div className="mt-auto flex flex-col gap-3 pt-6 sm:flex-row">
-            <Link
-              href={`/products/${product.slug}`}
-              className="landing-cta-secondary flex min-h-[44px] flex-1 items-center justify-center px-4 text-sm"
-            >
-              Details
-            </Link>
-            <ProductOrderActions
-              product={product}
-              buttonClassName="landing-cta-primary min-h-[44px] flex-1 py-3 text-sm"
-            />
-          </div>
+          <p className="shrink-0 font-serif text-lg text-[#c9b896]">
+            {formatPrice(product.price)}
+            <span className="ml-0.5 text-xs text-white/35">MAD</span>
+          </p>
         </div>
-      </article>
-    </>
+
+        <div className="mt-auto grid grid-cols-1 gap-3 pt-6 sm:grid-cols-2">
+          <Link
+            href={`/products/${product.slug}`}
+            className="landing-cta-secondary flex min-h-11 items-center justify-center px-4 text-sm"
+          >
+            Details
+          </Link>
+          <ProductOrderActions
+            product={product}
+            href={`/products/${product.slug}?order=1`}
+            buttonClassName="landing-cta-primary flex min-h-11 items-center justify-center px-4 text-sm"
+          />
+        </div>
+      </div>
+    </article>
   );
 });
 
@@ -144,7 +143,7 @@ const GalleryCell = memo(function GalleryCell({
             alt={alt}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             wrapperClassName="absolute inset-0 h-full w-full"
-            className="object-cover object-center transition duration-[1s] ease-out group-hover:scale-[1.02]"
+            className="object-cover object-center transition duration-1000 ease-out group-hover:scale-[1.02]"
           />
           <div className="landing-image-vignette pointer-events-none absolute inset-0" />
         </div>
@@ -156,13 +155,13 @@ const GalleryCell = memo(function GalleryCell({
 function CollectionToggle({
   view,
   onChange,
-}: {
+}: Readonly<{
   view: CollectionView;
   onChange: (v: CollectionView) => void;
-}) {
+}>) {
   return (
     <div
-      className="collection-toggle inline-flex w-full max-w-xs rounded-sm border border-white/[0.1] bg-white/[0.03] p-1 sm:w-auto"
+      className="collection-toggle inline-flex w-full max-w-xs rounded-sm border border-white/10 bg-white/3 p-1 sm:w-auto"
       role="tablist"
       aria-label="Collection view"
     >
@@ -191,7 +190,7 @@ function CollectionToggle({
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
               />
             ) : null}
-            <span className="relative z-[1]">{tab.label}</span>
+            <span className="relative z-1">{tab.label}</span>
           </button>
         );
       })}
@@ -203,7 +202,7 @@ export function LandingCollection({
   products,
   galleryImages,
   totalGalleryCount,
-}: LandingCollectionProps) {
+}: Readonly<LandingCollectionProps>) {
   const [view, setView] = useState<CollectionView>("products");
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
 
@@ -223,13 +222,13 @@ export function LandingCollection({
 
   useEffect(() => {
     const applyHash = () => {
-      const hash = window.location.hash;
+      const hash = globalThis.location.hash;
       if (hash === "#gallery") setView("gallery");
       else if (hash === "#collection") setView("products");
     };
     applyHash();
-    window.addEventListener("hashchange", applyHash);
-    return () => window.removeEventListener("hashchange", applyHash);
+    globalThis.addEventListener("hashchange", applyHash);
+    return () => globalThis.removeEventListener("hashchange", applyHash);
   }, []);
 
   const hasProducts = products.length > 0;
@@ -237,11 +236,11 @@ export function LandingCollection({
   return (
     <section
       id="collection"
-      className="scroll-mt-24 border-t border-white/[0.06] bg-[#050505]"
+      className="scroll-mt-24 border-t border-white/6 bg-[#050505]"
     >
       <span id="gallery" className="pointer-events-none absolute -mt-28 block h-0 w-0 scroll-mt-28" />
 
-      <div className="mx-auto max-w-[90rem] px-6 py-20 md:px-12 md:py-28">
+      <div className="mx-auto max-w-360 px-6 py-20 md:px-12 md:py-28">
         <div className="reveal-on-scroll flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <p className="text-[11px] uppercase tracking-[0.4em] text-[#c9b896]">Collection</p>
@@ -271,9 +270,9 @@ export function LandingCollection({
               >
                 {hasProducts ? (
                   <>
-                    <div className="mb-8 flex items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
+                    <div className="mb-8 flex items-center justify-between gap-4 border-b border-white/6 pb-6">
                       <p className="text-sm text-white/40">
-                        {products.length} piece{products.length !== 1 ? "s" : ""} available
+                        {products.length} piece{products.length === 1 ? "" : "s"} available
                       </p>
                       <Link
                         href="/products"
@@ -307,7 +306,7 @@ export function LandingCollection({
                     <button
                       type="button"
                       onClick={() => setView("gallery")}
-                      className="landing-cta-primary mt-8 inline-flex min-h-[48px] items-center justify-center px-8 text-sm"
+                      className="landing-cta-primary mt-8 inline-flex min-h-12 items-center justify-center px-8 text-sm"
                     >
                       View gallery
                     </button>
@@ -338,7 +337,7 @@ export function LandingCollection({
                 <div className="mt-12 flex justify-center">
                   <Link
                     href="/gallery"
-                    className="landing-cta-primary inline-flex min-h-[52px] min-w-[240px] items-center justify-center px-10 text-[15px] font-medium"
+                    className="landing-cta-primary inline-flex min-h-13 min-w-60 items-center justify-center px-10 text-[15px] font-medium"
                   >
                     View all photos
                     {totalGalleryCount > 0 ? (

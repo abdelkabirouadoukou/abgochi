@@ -63,7 +63,7 @@ export function ImageLightbox({ state, onClose, onIndexChange }: ImageLightboxPr
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-1000 flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-4000 flex items-center justify-center p-4 sm:p-8"
           onClick={onClose}
         >
           <div className="absolute inset-0 bg-black/92 backdrop-blur-sm" aria-hidden />
@@ -78,7 +78,7 @@ export function ImageLightbox({ state, onClose, onIndexChange }: ImageLightboxPr
               e.stopPropagation();
               onClose();
             }}
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-sm border border-white/15 text-2xl text-white/70 transition hover:border-[#c9b896]/50 hover:text-white sm:right-8 sm:top-8"
+            className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-sm border border-white/15 text-2xl text-white/70 transition hover:border-[#c9b896]/50 hover:text-white sm:right-8 sm:top-8"
             aria-label="Close"
           >
             ×
@@ -92,7 +92,7 @@ export function ImageLightbox({ state, onClose, onIndexChange }: ImageLightboxPr
                   e.stopPropagation();
                   goPrev();
                 }}
-                className="absolute left-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-sm border border-white/10 text-white/60 transition hover:border-[#c9b896]/40 hover:text-white sm:left-6 sm:flex"
+                className="absolute left-2 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-sm border border-white/10 text-white/60 transition hover:border-[#c9b896]/40 hover:text-white sm:left-6 sm:flex"
                 aria-label="Previous image"
               >
                 ‹
@@ -103,7 +103,7 @@ export function ImageLightbox({ state, onClose, onIndexChange }: ImageLightboxPr
                   e.stopPropagation();
                   goNext();
                 }}
-                className="absolute right-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-sm border border-white/10 text-white/60 transition hover:border-[#c9b896]/40 hover:text-white sm:right-6 sm:flex"
+                className="absolute right-2 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-sm border border-white/10 text-white/60 transition hover:border-[#c9b896]/40 hover:text-white sm:right-6 sm:flex"
                 aria-label="Next image"
               >
                 ›
@@ -117,7 +117,7 @@ export function ImageLightbox({ state, onClose, onIndexChange }: ImageLightboxPr
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-1 flex max-h-[min(85vh,900px)] w-full max-w-4xl flex-col items-center"
+            className="relative z-10 flex max-h-[min(85vh,900px)] w-full max-w-4xl flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-4/5 w-full max-h-[min(85vh,900px)] sm:aspect-3/4">

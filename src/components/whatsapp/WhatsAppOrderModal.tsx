@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SyntheticEvent } from "react";
 import {
   ORDER_AGREEMENT_CHECKBOX,
   ORDER_AGREEMENT_SHORT,
@@ -25,7 +25,7 @@ export function WhatsAppOrderModal({
   product,
   open,
   onClose,
-}: WhatsAppOrderModalProps) {
+}: Readonly<WhatsAppOrderModalProps>) {
   const [fullName, setFullName] = useState("");
   const [city, setCity] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -42,10 +42,10 @@ export function WhatsAppOrderModal({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", onKey);
+    globalThis.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
+      globalThis.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);
 
@@ -56,7 +56,7 @@ export function WhatsAppOrderModal({
     }
   }, [open]);
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!agreed) {
@@ -72,14 +72,18 @@ export function WhatsAppOrderModal({
     });
 
     if (!parsed.success) {
-      const f = parsed.error.flatten().fieldErrors;
-      setError(f.fullName?.[0] ?? f.city?.[0] ?? f.quantity?.[0] ?? "Check the form");
+      const fieldErrors = parsed.error.issues.reduce<Partial<Record<string, string>>>((acc, issue) => {
+        const key = issue.path[0];
+        if (typeof key === "string" && !acc[key]) acc[key] = issue.message;
+        return acc;
+      }, {});
+      setError(fieldErrors.fullName ?? fieldErrors.city ?? fieldErrors.quantity ?? "Check the form");
       return;
     }
 
     setError(null);
 
-    const productUrl = getProductPageUrl(product.slug, window.location.origin);
+    const productUrl = getProductPageUrl(product.slug, globalThis.location.origin);
 
     fetch("/api/clients/inquiry", {
       method: "POST",
@@ -105,9 +109,9 @@ export function WhatsAppOrderModal({
       mode: orderMode,
     });
 
-    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    const opened = globalThis.open(url, "_blank", "noopener,noreferrer");
     if (!opened) {
-      window.location.href = url;
+      globalThis.location.href = url;
     }
   }
 
@@ -116,7 +120,7 @@ export function WhatsAppOrderModal({
       {open ? (
         <>
           <motion.div
-            className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-md"
+            className="fixed inset-0 z-6000 bg-black/85 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -126,11 +130,11 @@ export function WhatsAppOrderModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="order-title"
-            className="fixed inset-x-4 top-1/2 z-[130] mx-auto max-h-[90vh] max-w-md -translate-y-1/2 overflow-y-auto border border-accent/15 bg-[#0a0a0a] p-6 sm:p-8"
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed left-1/2 top-1/2 z-6100 mx-auto max-h-[90vh] w-[min(92vw,28rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto border border-accent/15 bg-[#0a0a0a] p-6 shadow-2xl shadow-black/60 sm:w-[min(90vw,30rem)] sm:p-8"
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 14, scale: 0.99 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
             <p className="label-luxury">Order via WhatsApp</p>
@@ -174,13 +178,13 @@ export function WhatsAppOrderModal({
               <Field label="Note (optional)" id="msg">
                 <textarea
                   id="msg"
-                  className="input-luxury min-h-[72px] resize-none"
+                  className="input-luxury min-h-18 resize-none"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </Field>
 
-              <label className="flex cursor-pointer gap-3 border border-white/[0.08] bg-white/[0.02] p-4">
+              <label className="flex cursor-pointer gap-3 border border-white/8 bg-white/2 p-4">
                 <input
                   type="checkbox"
                   checked={agreed}
@@ -222,7 +226,11 @@ export function WhatsAppOrderModal({
   );
 }
 
-function Field({ label, id, children }: { label: string; id: string; children: React.ReactNode }) {
+function Field({
+  label,
+  id,
+  children,
+}: Readonly<{ label: string; id: string; children: React.ReactNode }>) {
   return (
     <div>
       <label htmlFor={id} className="caption-luxury mb-2 block text-accent/80">

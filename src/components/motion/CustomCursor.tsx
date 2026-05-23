@@ -1,9 +1,11 @@
 "use client";
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function CustomCursor() {
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -14,9 +16,12 @@ export function CustomCursor() {
 
   useEffect(() => {
     setMounted(true);
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (coarse || reduced) return;
+    const coarse = globalThis.matchMedia("(pointer: coarse)").matches;
+    const reduced = globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (coarse || reduced) {
+      document.body.classList.remove("cursor-none");
+      return;
+    }
 
     setVisible(true);
     document.body.classList.add("cursor-none");
@@ -35,24 +40,30 @@ export function CustomCursor() {
       if (target.closest("a, button, [data-magnetic]")) setHovering(false);
     };
 
-    window.addEventListener("mousemove", move);
+    globalThis.addEventListener("mousemove", move);
     document.addEventListener("mouseover", onOver);
     document.addEventListener("mouseout", onOut);
 
     return () => {
       document.body.classList.remove("cursor-none");
-      window.removeEventListener("mousemove", move);
+      globalThis.removeEventListener("mousemove", move);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
     };
-  }, [x, y]);
+  }, [x, y, pathname]);
 
   if (!mounted || !visible) return null;
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-[200] hidden mix-blend-difference md:block"
-      style={{ x: springX, y: springY, translateX: "-50%", translateY: "-50%" }}
+      className="pointer-events-none fixed left-0 top-0 hidden mix-blend-difference md:block"
+      style={{
+        x: springX,
+        y: springY,
+        translateX: "-50%",
+        translateY: "-50%",
+        zIndex: 5000,
+      }}
     >
       <motion.div
         animate={{
@@ -61,7 +72,7 @@ export function CustomCursor() {
           opacity: hovering ? 0.85 : 0.6,
         }}
         transition={{ type: "spring", stiffness: 350, damping: 30 }}
-        className="rounded-full border border-white bg-white"
+        className="rounded-full border border-white bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.35)]"
       />
     </motion.div>
   );
